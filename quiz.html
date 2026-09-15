@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивный Квиз - Какое растение вам подходит?</title>
+    <meta name="description" content="Пройдите короткий тест и узнайте, какое комнатное растение идеально подойдет для вашего образа жизни и квартиры.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .quiz-container {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            max-width: 700px;
+            margin: 2rem auto;
+            text-align: center;
+        }
+        .quiz-question {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: var(--primary-dark);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .quiz-option {
+            background: var(--light-bg);
+            border: 2px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+        .quiz-option:hover {
+            border-color: var(--primary-color);
+            background: rgba(43, 122, 75, 0.05);
+        }
+        #quiz-result {
+            display: none;
+        }
+        .result-img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container navbar">
+            <a href="index.html" class="logo">
+                <i class="fas fa-leaf"></i> Зеленый Дом
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню">
+                <i class="fas fa-bars"></i>
+            </button>
+                        <ul class="nav-links">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="care.html">Уход</a></li>
+                <li><a href="best-plants.html">Виды</a></li>
+                <li><a href="diseases.html">Болезни</a></li>
+                <li><a href="smart-garden.html">Технологии</a></li>
+                <li><a href="pet-safe.html">Животные</a></li>
+                <li><a href="quiz.html" class="active">Квиз</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+        <h1 class="section-title">Тест: Ваш идеальный зеленый друг</h1>
+        
+        <div class="quiz-container" id="quiz-box">
+            <div id="quiz-content">
+                <div class="quiz-question" id="question-text">Как часто вы готовы поливать растение?</div>
+                <div class="quiz-options" id="options-container">
+                    <!-- Options will be injected by JS -->
+                </div>
+            </div>
+            
+            <div id="quiz-result">
+                <h2 style="color: var(--primary-color); margin-bottom: 1rem;">Вам идеально подойдет:</h2>
+                <h3 id="result-title" style="font-size: 2rem; margin-bottom: 1rem;">Замиокулькас</h3>
+                <img id="result-image" src="" alt="Result" class="result-img">
+                <p id="result-desc" style="font-size: 1.1rem; margin-bottom: 2rem;">Описание</p>
+                <button class="btn" onclick="location.reload()">Пройти еще раз</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container footer-content">
+            <a href="index.html" class="footer-logo">
+                <i class="fas fa-leaf"></i> Зеленый Дом
+            </a>
+            <p>&copy; 2026 Зеленый Дом. Все права защищены.</p>
+            <ul class="footer-links">
+                <li><a href="#">О проекте</a></li>
+                <li><a href="#">Контакты</a></li>
+                <li><a href="#">Политика конфиденциальности</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script>
+        const questions = [
+            {
+                q: "Как часто вы готовы поливать растение?",
+                options: [
+                    { text: "Каждый день или через день, обожаю ухаживать!", points: "water" },
+                    { text: "Раз в неделю, по выходным.", points: "neutral" },
+                    { text: "Я часто забываю или уезжаю надолго.", points: "dry" }
+                ]
+            },
+            {
+                q: "Сколько света в вашей комнате?",
+                options: [
+                    { text: "Окна на юг, солнце заливает комнату.", points: "sun" },
+                    { text: "Обычная комната, свет мягкий (запад/восток).", points: "neutral" },
+                    { text: "Окна на север или это угол комнаты (мало света).", points: "shade" }
+                ]
+            },
+            {
+                q: "Есть ли у вас дома кошка или собака?",
+                options: [
+                    { text: "Да, и они любят жевать листья.", points: "pets" },
+                    { text: "Да, но им все равно на цветы.", points: "neutral" },
+                    { text: "Нет домашних животных.", points: "none" }
+                ]
+            }
+        ];
+
+        const results = {
+            dry: {
+                title: "Замиокулькас (Долларовое дерево)",
+                img: "https://images.unsplash.com/photo-1597055938038-f99996e38b3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                desc: "Идеален для занятых людей! Он выживет, даже если вы уедете в отпуск на месяц. Любит тень и редкий полив."
+            },
+            water: {
+                title: "Калатея",
+                img: "https://images.unsplash.com/photo-1601053702157-19beebbb7d94?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                desc: "Вы любите ухаживать, а она любит влагу! Шикарные узоры на листьях отблагодарят вас за ежедневное опрыскивание и заботу."
+            },
+            pets: {
+                title: "Хлорофитум",
+                img: "https://images.unsplash.com/photo-1620127252536-1e663a8a30f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                desc: "Абсолютно безопасен для вашего кота. Даже если он его пожует, ничего страшного не случится. Бонус: отлично чистит воздух!"
+            },
+            sun: {
+                title: "Суккуленты (Алоэ, Эхеверия)",
+                img: "https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                desc: "Солнечный подоконник — их рай! Они запасают воду в листьях, поэтому поливать их нужно редко, а выглядят они очень стильно."
+            },
+            default: {
+                title: "Монстера",
+                img: "https://images.unsplash.com/photo-1616053335967-df533c373a00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                desc: "Универсальный и очень трендовый вариант. Растет быстро, выглядит эффектно в любом интерьере и требует умеренного ухода."
+            }
+        };
+
+        let currentQ = 0;
+        let score = {};
+
+        const qText = document.getElementById('question-text');
+        const optionsBox = document.getElementById('options-container');
+        const quizContent = document.getElementById('quiz-content');
+        const quizResult = document.getElementById('quiz-result');
+
+        function loadQuestion() {
+            qText.innerText = questions[currentQ].q;
+            optionsBox.innerHTML = '';
+            questions[currentQ].options.forEach(opt => {
+                const div = document.createElement('div');
+                div.className = 'quiz-option';
+                div.innerText = opt.text;
+                div.onclick = () => selectOption(opt.points);
+                optionsBox.appendChild(div);
+            });
+        }
+
+        function selectOption(points) {
+            score[points] = (score[points] || 0) + 1;
+            currentQ++;
+            if (currentQ < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            quizContent.style.display = 'none';
+            quizResult.style.display = 'block';
+
+            let maxPoint = 'default';
+            let maxVal = 0;
+            for (const [key, val] of Object.entries(score)) {
+                if (key !== 'neutral' && key !== 'none' && val > maxVal) {
+                    maxVal = val;
+                    maxPoint = key;
+                }
+            }
+
+            const res = results[maxPoint] || results['default'];
+            document.getElementById('result-title').innerText = res.title;
+            document.getElementById('result-image').src = res.img;
+            document.getElementById('result-desc').innerText = res.desc;
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
